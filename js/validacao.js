@@ -54,13 +54,29 @@ const mensagensDeErro = {
     },
     estado: {
         valueMissing: 'O campo de estado não pode estar vazio.'
+    },
+    telefone: {
+        valueMissing: 'O campo de telefone não pode estar vazio.',
+        patternMismatch: 'O telefone digitado não é válido.',
+        customError: 'O telefone digitado não é válido.'
+    },
+    instagram: {
+        valueMissing: 'O campo de Instagram não pode estar vazio.',
+        patternMismatch: 'O Instagram deve começar com @.',
+        customError: 'O Instagram deve começar com @.'
+    },
+    quantidade: {
+        valueMissing: 'O campo de quantidade não pode estar vazio.'
     }
 }
 
 const validadores = {
     dataNascimento:input => validaDataNascimento(input),
     cpf:input => validaCPF(input),
-    cep:input => recuperarCEP(input)
+    cep:input => recuperarCEP(input),
+    telefone: input => validaTelefone(input),
+    instagram: input => validaInstagram(input),
+    quantidade: input => validaQuantidade(input)
 }
 
 function mostraMensagemDeErro(tipoDeInput, input) {
@@ -194,4 +210,40 @@ function preencheCamposComCEP(data) {
     logradouro.value = data.logradouro
     cidade.value = data.localidade
     estado.value = data.uf
+}
+
+function validaTelefone(input) {
+    const telefone = input.value.replace(/\D/g, '')
+    let mensagem = ''
+
+    if (telefone.length < 10 || telefone.length > 11) {
+        mensagem = 'O telefone digitado não é válido.'
+    } else {
+        const ddd = telefone.substring(0, 2)
+        const validDDDs = ['11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', '24', '27', '28', '31', '32', '33', '34', '35', '37', '38', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '53', '54', '55', '61', '62', '64', '63', '65', '66', '67', '68', '69', '71', '73', '74', '75', '77', '79', '81', '82', '83', '84', '85', '86', '87', '88', '89', '91', '93', '92', '94', '95', '96', '97', '98', '99']
+        if (!validDDDs.includes(ddd)) {
+            mensagem = 'O DDD digitado não é válido.'
+        }
+    }
+
+    input.setCustomValidity(mensagem)
+}
+
+function validaInstagram(input) {
+    const instagram = input.value
+    let mensagem = ''
+
+    if (!instagram.startsWith('@')) {
+        mensagem = 'O Instagram deve começar com @.'
+    }
+
+    input.setCustomValidity(mensagem)
+}
+
+function validaQuantidade(input) {
+    let mensagem = ''
+    if (input.value.trim() === '') {
+        mensagem = 'O campo de quantidade não pode estar vazio.'
+    }
+    input.setCustomValidity(mensagem)
 }
